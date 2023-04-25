@@ -19,6 +19,8 @@ class Bitsearch:
                 info = divs.find("div", class_="info")
                 name = info.find("h5", class_="title").find("a").text
                 url = info.find("h5", class_="title").find("a")["href"]
+                verify = True if '✅' in info.find(
+                    "h5", class_="title").text else False
                 category = info.find("div").find("a", class_="category").text
                 if not category:
                     continue
@@ -33,10 +35,11 @@ class Bitsearch:
                     magnet = links[1]["href"]
                     torrent = links[0]["href"]
 
-                    img = 'https://images.pexels.com/photos/388898/pexels-photo-388898.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' if i%2 == 0 else 'https://media.tenor.com/sVvqNXxAF9IAAAAd/michael-oliver-problem-child.gif'
+                    img = 'https://images.pexels.com/photos/388898/pexels-photo-388898.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' if i % 2 == 0 else 'https://media.tenor.com/sVvqNXxAF9IAAAAd/michael-oliver-problem-child.gif'
                     my_dict["data"].append(
                         {
                             "name": name,
+                            "verify": verify,
                             "size": size,
                             "seeders": seeders,
                             "leechers": leechers,
@@ -50,7 +53,7 @@ class Bitsearch:
                             "date": date,
                             "downloads": downloads,
                             "img": img,
-                            "imgLink":"https://hao123.com/"
+                            "imgLink": "https://hao123.com/"
                         }
                     )
                 if len(my_dict["data"]) == self.LIMIT:
@@ -88,11 +91,14 @@ class Bitsearch:
     def search(self, query, page, limit, category, sort):
         start_time = time.time()
         self.LIMIT = limit
-        url = self.BASE_URL + "/search?q={}&page={}&category={}&sort={}".format(query, page, category, sort)
+        url = self.BASE_URL + \
+            "/search?q={}&page={}&category={}&sort={}".format(
+                query, page, category, sort)
         return self.parser_result(start_time, url)
 
     def parser_result(self, start_time, url):
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/80.0.3987.87 Chrome/80.0.3987.87 Safari/537.36"})
+        resp = requests.get(url, headers={
+                            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/80.0.3987.87 Chrome/80.0.3987.87 Safari/537.36"})
         results = self._parser(resp.text)
         if results != None:
             results["time"] = time.time() - start_time
