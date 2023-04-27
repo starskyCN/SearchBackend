@@ -1,5 +1,6 @@
 import re
 import time
+import urllib.parse
 import requests
 from bs4 import BeautifulSoup
 
@@ -93,13 +94,13 @@ class Bitsearch:
         self.LIMIT = limit
         url = self.BASE_URL + \
             "/search?q={}&page={}&category={}&sort={}".format(
-                query, page, category, sort)
+                urllib.parse.quote(query), page, category, sort)
         return self.parser_result(start_time, url)
 
     def parser_result(self, start_time, url):
         resp = requests.get(url, headers={
                             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/80.0.3987.87 Chrome/80.0.3987.87 Safari/537.36"})
-        results = self._parser(resp.text)
+        results = self._parser(resp.text.encode('utf-8'))
         if results != None:
             results["time"] = time.time() - start_time
             results["total"] = len(results["data"])
