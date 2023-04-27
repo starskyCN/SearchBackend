@@ -100,7 +100,7 @@ class Bitsearch:
     def parser_result(self, start_time, url):
         resp = requests.get(url, headers={
                             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/80.0.3987.87 Chrome/80.0.3987.87 Safari/537.36"})
-        results = self._parser(resp.text.encode('utf-8'))
+        results = self._parser(resp.text)
         if results != None:
             results["time"] = time.time() - start_time
             results["total"] = len(results["data"])
